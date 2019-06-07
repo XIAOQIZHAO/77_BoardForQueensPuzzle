@@ -42,17 +42,45 @@ public class BoardForQueensPuzzle {
                      no queen attacked another.
      */
     public boolean lastIsNg() {
-	//check vertical
-	for (int i = 0; i < lastRankFilled; i++)
-	    if (filesWithQueens[lastRankFilled] == filesWithQueens[i])
-	        return true;
+
+
+	// empty boards are ok trivially
+        if( lastRankFilled < 0) return false;
+
+        int fileOfLast = filesWithQueens[ lastRankFilled];
+        for( int previouslyFilledRank = 0
+           ; previouslyFilledRank <  lastRankFilled
+           ; previouslyFilledRank++
+           ) {
+            int fileOfPrev = filesWithQueens[ previouslyFilledRank];
+            // There are 2 ways to conflict:
+            if(
+                // on the same file
+                fileOfLast == fileOfPrev
+
+                ||
+
+                /* using integer arithmetic: on same diagonal
+                   if difference in ranks
+                   == difference in files or its negative
+                 */
+                   lastRankFilled - previouslyFilledRank  // always +
+                == Math.abs( fileOfLast - fileOfPrev)
+                ) return true;
+           }
+           return false;
+}
+    //  //check vertical
+    //for (int i = 0; i < lastRankFilled; i++)
+    //    if (filesWithQueens[lastRankFilled] == filesWithQueens[i])
+    //       return true;
 	
-	//check diagonal
-	for (int i = 0; i < lastRankFilled; i++)
-	    if (Math.abs(i - lastRankFilled) ==
-		Math.abs(filesWithQueens[i] - filesWithQueens[lastRankFilled]))
-		return true;
-	return false;
+    //	//check diagonal
+    //	for (int i = 0; i < lastRankFilled; i++)
+    //	    if (Math.abs(i - lastRankFilled) ==
+    //	Math.abs(filesWithQueens[i] - filesWithQueens[lastRankFilled]))
+    //	return true;
+    //	return false;
 	    
     }
 
@@ -69,10 +97,7 @@ public class BoardForQueensPuzzle {
         This method checks the last-filled rank.
      */
     public boolean accept() {
-	if (ranks() == lastRankFilled + 1 && !lastIsNg())
-	    return true;
-	if (ranks() == 0) return true;
-        return false;
+	return ranks() == lastRankFilled + 1 && !lastIsNg();
     }
 
 
@@ -90,7 +115,7 @@ public class BoardForQueensPuzzle {
       @precondition: Some rank(s) have been populated.
      */
     public void depopulate() {
-	filesWithQueens[lastRankFilled--] = 0;
+	lastRankFilled--;
     }
 
 
